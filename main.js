@@ -1,61 +1,87 @@
-let registerBtn = document.querySelector(".registerbtn");
-let loginBtn = document.querySelector(".loginbtn");
-let username = document.getElementById("username");
-let regEmail = document.getElementById("reg-email");
-let regPassword = document.getElementById("reg-password");
+let register = document.querySelector(".register");
+let login = document.querySelector(".login");
+let username = register.children[1];
+let regEmail = register.children[2];
+let regPassword = register.children[3];
+let registerBtn = register.children[4];
+
 let logMail = document.getElementById("log-email");
 let logPass = document.getElementById("log-password");
-let signIn = document.getElementById("sign-in");
-let signUp = document.getElementById("sign-up");
+let loginBtn = document.querySelector(".loginbtn");
+
+let activeDisplay = document.querySelectorAll(".active-display");
+let submitBtn = document.querySelectorAll(".submitBtn");
 let text = document.querySelector(".text");
 
-
-
-signUp.addEventListener('click', function () {
-    document.querySelector(".login").style.display = "none";
-    document.querySelector(".register").style.display = "flex";
-    text.textContent = "Please fill all compulsory fields to register";
-})
-
-registerBtn.addEventListener('click', function () {
-    checkInput();
-})
-
-loginBtn.addEventListener('click', function () {
-    checkLogin();
-    clearInput();
-})
-
-signIn.addEventListener('click', function () {
-    text.textContent = "Please enter your email and password to login";
-    if (regEmail.value !== "" && regPassword.value !== "") {
-        checkInput();
-    }
-    document.querySelector(".login").style.display = "flex";
-    document.querySelector(".register").style.display = "none";
-})
-
-function checkInput() {
-    if (username.value !== "" && regEmail.value !== "" && regPassword.value !== "") {
-        document.querySelector(".text").textContent = "Registartion sucessful! " + username.value + ", Please login";
-        document.querySelector(".register").style.display = "none";
-        document.querySelector(".login").style.display = "flex";
-    } else {
-        text.textContent = "Please fill all compulsory fields";
+function removeBoxDisplay(){
+    if(register.classList.contains("clear")){
+        login.classList.add("clear");
+        register.classList.remove("clear")
+    }else{
+        register.classList.add("clear")
+        login.classList.remove("clear");
     }
 }
 
-function checkLogin() {
-    if (logMail.value === regEmail.value && logPass.value === regPassword.value) {
-        document.querySelector(".container").style.display = "none";
-        document.querySelector(".text").textContent = "Welcome Your Username is: " + username.value;
-        document.querySelector(".text").classList.add("welcome");
-        document.querySelector(".main-container").style.display = "flex";
+activeDisplay.forEach(item =>{
+    item.addEventListener('click', () => {
+    removeBoxDisplay();
+   })
+})
+
+const checkUserInput = () => {
+    if (username.value && regEmail.value && regPassword.value !== "") {
+        person.username = username.value;
+        person.email = regEmail.value;
+        person.password = regPassword.value;
+        text.textContent = `Registration successful! Please login.`;
+        console.log(person);
+        removeBoxDisplay();
     } else {
-        text.textContent = "Invalid email or password!";
+        text.textContent = "Please fill all compulsory fields.";
+    }
+}
+
+submitBtn.forEach(btn=>{
+    btn.addEventListener('click', (e) =>{
+      if(e.currentTarget.classList.contains("registerbtn")){
+        checkUserInput();
+      }else{
+        allowUserLogin();
+      }
+      clearInput();
+    })
+})
+
+function allowUserLogin(){
+    if(logMail.value && logPass.value === ""){
+       text.textContent = "Please fill all compulsory fields.";
+    }else {
+        checkLoginDetails();
+    }
+}
+
+const checkLoginDetails = () =>{
+    if (logMail.value === person.email && logPass.value === person.password) {
+        console.log(person);
+       text.textContent = `Welcome ${person.username}! Please login.`;
+        removeBoxDisplay();
+    } else {
+        text.textContent = "Invalid email or password! Please try again.";
     }
 }
 
 function clearInput() {
-    text.style.display = "none";
+    const allInput = document.querySelectorAll("input");
+
+    allInput.forEach(input =>{
+        input.value = "";
+    })
 }
+
+const person = {
+    id: "",
+    username: "",
+    email: "",
+    password: ""
+};
